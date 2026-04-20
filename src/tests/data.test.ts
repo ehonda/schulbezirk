@@ -28,6 +28,7 @@ describe('SO1 data files', () => {
   it('stores a closed outer ring', () => {
     const outerRing = district.geometry.coordinates[0];
     expect(outerRing[0]).toEqual(outerRing[outerRing.length - 1]);
+    expect(outerRing.length).toBeGreaterThan(40);
   });
 
   it('keeps both schools inside the traced district polygon', () => {
