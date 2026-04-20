@@ -1,0 +1,48 @@
+{
+  "type": "Feature",
+  "properties": {
+    "districtId": "SO1",
+    "name": "gemeinsamer Schulbezirk SO1",
+    "sourceUrl": "https://geodaten.leipzig.de/public/projekte/schulweg/pdf/gemeinsamerSchulbezirk_SO1.pdf",
+    "sourceVersion": "Stadt Leipzig Schulwegplan gemeinsamer Schulbezirk SO1 (Kartogr. Bearbeitung 06/2024)",
+    "pdfRevision": "2024-06",
+    "traceDate": "2026-04-20",
+    "traceMethod": "Hand-traced first-pass GeoJSON based on the official published PDF map.",
+    "notes": [
+      "This is a family-use screening polygon, not an official city GeoJSON dataset.",
+      "Validate borderline addresses against the official PDF before making decisions."
+    ],
+    "schoolIds": ["august-bebel", "wilhelm-busch"],
+    "schoolNames": ["August-Bebel-Schule", "Wilhelm-Busch-Schule"]
+  },
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [12.3714, 51.3432],
+        [12.3735, 51.346],
+        [12.3778, 51.3477],
+        [12.3884, 51.3489],
+        [12.3929, 51.348],
+        [12.3947, 51.3446],
+        [12.3995, 51.3425],
+        [12.4036, 51.3418],
+        [12.4097, 51.3408],
+        [12.4128, 51.3385],
+        [12.4147, 51.335],
+        [12.4142, 51.3327],
+        [12.4117, 51.3308],
+        [12.4094, 51.3284],
+        [12.4047, 51.3274],
+        [12.3987, 51.327],
+        [12.3928, 51.3272],
+        [12.3864, 51.328],
+        [12.381, 51.3291],
+        [12.3766, 51.3308],
+        [12.3734, 51.334],
+        [12.3721, 51.3382],
+        [12.3714, 51.3432]
+      ]
+    ]
+  }
+}

@@ -1,0 +1,20 @@
+[
+  {
+    "id": "august-bebel",
+    "name": "August-Bebel-Schule",
+    "districtId": "SO1",
+    "address": "Husemannstrasse 2, 04315 Leipzig",
+    "latitude": 51.341384426,
+    "longitude": 12.399044622,
+    "sourceUrl": "https://schuldatenbank.sachsen.de/index.php?id=100&institution_key=4412185"
+  },
+  {
+    "id": "wilhelm-busch",
+    "name": "Wilhelm-Busch-Schule",
+    "districtId": "SO1",
+    "address": "Heinrichstrasse 43-45, 04317 Leipzig",
+    "latitude": 51.335877745,
+    "longitude": 12.400676376,
+    "sourceUrl": "https://schuldatenbank.sachsen.de/index.php?id=100&institution_key=4412151"
+  }
+]
