@@ -15,7 +15,7 @@ Small static app to check whether an address or dropped map pin falls inside Lei
 
 ## Accuracy note
 
-The `SO1` polygon in `public/data/districts/SO1.geojson` now uses the boundary detail extracted from the official Leipzig PDF map, but it is still georeferenced into this app manually and is not an official machine-readable polygon dataset.
+The `SO1` polygon in `public/data/districts/SO1.geojson` now uses the boundary detail extracted from the official Leipzig PDF map and is georeferenced with matched boundary vertices, but it is still not an official machine-readable polygon dataset.
 
 Use it as a strong screening aid for apartment hunting, but validate borderline addresses against the official source:
 
