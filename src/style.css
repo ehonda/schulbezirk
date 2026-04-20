@@ -228,7 +228,6 @@ button.ghost {
   display: flex;
   flex-direction: column;
   gap: 0.65rem;
-  min-height: 5rem;
 }
 
 .candidate {
@@ -248,6 +247,35 @@ button.ghost {
 .candidate span {
   font-size: 0.84rem;
   color: rgba(23, 40, 58, 0.68);
+}
+
+.candidate-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 1rem;
+  border-radius: 22px;
+  border: 1px solid rgba(217, 72, 65, 0.22);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 241, 232, 0.96));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 16px 40px rgba(217, 72, 65, 0.12);
+}
+
+.candidate-panel--hidden {
+  display: none;
+}
+
+.candidate-panel__header {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.candidate-panel__header h3 {
+  margin: 0;
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
+  font-size: 1.55rem;
 }
 
 .empty-state {
@@ -428,6 +456,10 @@ button.ghost {
   .card,
   .map-card {
     border-radius: 22px;
+  }
+
+  .candidate-panel {
+    border-radius: 18px;
   }
 
   .field__row--address,

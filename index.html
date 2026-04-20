@@ -87,6 +87,21 @@
             <p id="search-status" class="muted search-status">
               MapTiler-Schlüssel eingeben oder direkt in die Karte klicken.
             </p>
+
+            <section
+              id="candidate-panel"
+              class="candidate-panel candidate-panel--hidden"
+              aria-live="polite"
+            >
+              <div class="candidate-panel__header">
+                <h3>Treffer auswählen</h3>
+                <p class="muted">
+                  Diese Adresse ist mehrdeutig. Bitte den richtigen Treffer
+                  auswählen, bevor das Ergebnis berechnet wird.
+                </p>
+              </div>
+              <div id="candidate-list" class="candidate-list"></div>
+            </section>
           </section>
 
           <section class="card stack">
@@ -107,19 +122,6 @@
               <summary>Technische Details anzeigen</summary>
               <pre id="result-json" class="result-json"></pre>
             </details>
-          </section>
-
-          <section class="card stack">
-            <div class="card__header">
-              <h2>Treffer auswählen</h2>
-              <p class="muted">
-                Wenn eine Adresse mehrdeutig ist, kannst du hier den passenden
-                Treffer auswählen.
-              </p>
-            </div>
-            <div id="candidate-list" class="candidate-list empty-state">
-              Noch keine Suchtreffer.
-            </div>
           </section>
         </aside>
 

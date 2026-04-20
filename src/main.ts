@@ -21,6 +21,7 @@ interface AppElements {
   addressInput: HTMLInputElement;
   searchButton: HTMLButtonElement;
   searchStatus: HTMLParagraphElement;
+  candidatePanel: HTMLElement;
   candidateList: HTMLDivElement;
   resultPanel: HTMLDivElement;
   resultJson: HTMLPreElement;
@@ -39,6 +40,7 @@ function getElements(): AppElements {
     addressInput: document.querySelector('#address-input') as HTMLInputElement,
     searchButton: document.querySelector('#search-button') as HTMLButtonElement,
     searchStatus: document.querySelector('#search-status') as HTMLParagraphElement,
+    candidatePanel: document.querySelector('#candidate-panel') as HTMLElement,
     candidateList: document.querySelector('#candidate-list') as HTMLDivElement,
     resultPanel: document.querySelector('#result-panel') as HTMLDivElement,
     resultJson: document.querySelector('#result-json') as HTMLPreElement,
@@ -288,6 +290,7 @@ class SchulbezirkApp {
       if (!candidates.length) {
         this.elements.searchStatus.textContent =
           'Keine passenden Treffer in Leipzig gefunden.';
+        this.hideCandidates();
         return;
       }
 
@@ -311,11 +314,11 @@ class SchulbezirkApp {
     this.elements.candidateList.replaceChildren();
 
     if (!candidates.length) {
-      this.elements.candidateList.className = 'candidate-list empty-state';
-      this.elements.candidateList.textContent = 'Noch keine Suchtreffer.';
+      this.hideCandidates();
       return;
     }
 
+    this.elements.candidatePanel.classList.remove('candidate-panel--hidden');
     this.elements.candidateList.className = 'candidate-list';
 
     candidates.forEach((candidate) => {
@@ -332,6 +335,21 @@ class SchulbezirkApp {
       });
       this.elements.candidateList.appendChild(button);
     });
+
+    const firstCandidate = this.elements.candidateList.querySelector(
+      'button'
+    ) as HTMLButtonElement | null;
+    firstCandidate?.focus();
+    this.elements.candidatePanel.scrollIntoView({
+      behavior: 'smooth',
+      block: 'nearest'
+    });
+  }
+
+  private hideCandidates(): void {
+    this.elements.candidatePanel.classList.add('candidate-panel--hidden');
+    this.elements.candidateList.className = 'candidate-list';
+    this.elements.candidateList.replaceChildren();
   }
 
   private applyCandidate(query: string, candidate: SearchCandidate): void {
@@ -386,7 +404,7 @@ class SchulbezirkApp {
   private setSelection(selection: PointSelection): void {
     this.currentSelection = selection;
     this.reverseLookupToken += 1;
-    this.renderCandidates([]);
+    this.hideCandidates();
 
     this.elements.searchStatus.textContent =
       selection.resolutionMethod === 'geocoded'
@@ -499,7 +517,7 @@ class SchulbezirkApp {
   private clearSelection(): void {
     this.currentSelection = undefined;
     this.reverseLookupToken += 1;
-    this.renderCandidates([]);
+    this.hideCandidates();
     this.elements.addressInput.value = '';
 
     if (this.selectionMarker) {
