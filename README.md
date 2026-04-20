@@ -8,7 +8,7 @@ Small static app to check whether an address or dropped map pin falls inside Lei
 ## What this app does
 
 - Loads a versioned GeoJSON polygon for `SO1`
-- Geocodes an address in the browser with MapTiler when a key is available
+- Geocodes an address in the browser with MapTiler when a runtime key is available
 - Falls back to a manual map pin when geocoding is unavailable or ambiguous
 - Runs the district check fully client-side
 - Builds cleanly for GitHub Pages project hosting
@@ -38,33 +38,29 @@ npm run build
 npm run preview
 ```
 
-## MapTiler key options
+## MapTiler key entry
 
-You have two ways to enable address search:
-
-1. Build-time key:
-
-```bash
-VITE_MAPTILER_API_KEY=your_key_here npm run dev
-```
-
-2. Runtime key:
+Address search is intentionally runtime-only now:
 
 - Open the app
-- Expand the "MapTiler-Schlussel fur Adresssuche" section
-- Paste the key and save it to the browser
+- Paste a MapTiler key into the visible key field
+- Click `Speichern`
 
-Because the app is static, any client-side key is ultimately browser-visible. For GitHub Pages, restrict the key to your Pages domain in MapTiler.
+The key is stored only in local browser storage.
+
+Because the app is static, any key used in the browser is still browser-visible. For GitHub Pages, restrict the key to your Pages domain in MapTiler.
 
 ## GitHub Pages deployment
 
 The workflow in `.github/workflows/deploy-pages.yml` builds and deploys the app to GitHub Pages.
 
-Optional repo secret:
+The deployment no longer injects any shared MapTiler key at build time.
 
-- `VITE_MAPTILER_API_KEY`
+Hosted behavior:
 
-Even without a key, the hosted app still works in manual-pin mode.
+- Everyone can open the site
+- Visitors can always use manual-pin mode
+- Address lookup only works after a visitor enters their own MapTiler key locally
 
 ## Data files
 

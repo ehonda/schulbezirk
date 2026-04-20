@@ -2,144 +2,150 @@
 <html lang="de">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Leipzig Schulbezirk Checker</title>
   </head>
   <body>
     <div class="page-shell">
-      <header class="hero">
-        <div class="hero__copy">
+      <header class="topbar">
+        <div class="topbar__copy">
           <p class="eyebrow">Wohnungssuche in Leipzig</p>
-          <h1>Schulbezirk schnell gegenprufen</h1>
-          <p class="hero__lede">
-            Adressen im gemeinsamen Schulbezirk SO1 fur August-Bebel-Schule
-            und Wilhelm-Busch-Schule im Browser gegenprufen.
+          <h1>Schulbezirk prüfen</h1>
+          <p class="topbar__lede">
+            Schlüssel einfügen, Adresse prüfen, Ergebnis sofort auf der Karte
+            sehen.
           </p>
         </div>
-        <div class="hero__sources">
-          <p>Quelle der Zonengrenze</p>
+        <nav class="source-links" aria-label="Quellen">
           <a
             href="https://geodaten.leipzig.de/public/projekte/schulweg/pdf/gemeinsamerSchulbezirk_SO1.pdf"
             target="_blank"
             rel="noreferrer"
           >
-            Offiziellen SO1-Schulwegplan offnen
+            SO1-Schulwegplan
           </a>
           <a
             href="https://opendata.leipzig.de/dataset/ubersicht-allgemeinbildende-schulen-in-leipzig-mit-adressen-schuljahr-2024-25"
             target="_blank"
             rel="noreferrer"
           >
-            Leipziger Schuldaten ansehen
+            Leipziger Schuldaten
           </a>
-        </div>
+        </nav>
       </header>
 
-      <main class="layout">
-        <section class="panel">
-          <form id="search-form" class="stack">
-            <div class="field">
-              <label for="school-select">Schule</label>
-              <select id="school-select" name="school"></select>
-            </div>
-
-            <div class="field">
-              <label for="address-input">Adresse in Leipzig</label>
-              <div class="field__row">
-                <input
-                  id="address-input"
-                  name="address"
-                  type="text"
-                  placeholder="z. B. Heinrichstrasse 12, Leipzig"
-                  autocomplete="street-address"
-                />
-                <button id="search-button" type="submit">Suchen</button>
-              </div>
-              <p id="search-status" class="muted">
-                Map-Suche wird geladen.
-              </p>
-            </div>
-          </form>
-
-          <details class="settings-card">
-            <summary>MapTiler-Schlussel fur Adresssuche</summary>
-            <div class="settings-card__body stack">
+      <main class="workspace">
+        <aside class="control-panel">
+          <section class="search-card stack">
+            <div class="card__header">
+              <p class="eyebrow">Schnellcheck</p>
+              <h2>Adresse und Schlüssel</h2>
               <p class="muted">
-                Optional fur GitHub Pages: Der Schlussel wird nur in diesem
-                Browser gespeichert. Ohne Schlussel funktioniert der manuelle
-                Pin weiterhin.
+                Der MapTiler-Schlüssel wird nur lokal in diesem Browser
+                gespeichert.
               </p>
-              <div class="field">
-                <label for="api-key-input">MapTiler API Key</label>
-                <div class="field__row">
-                  <input
-                    id="api-key-input"
-                    type="password"
-                    placeholder="Optionaler Browser-Schlussel"
-                    autocomplete="off"
-                  />
-                  <button id="save-key-button" type="button">Speichern</button>
-                  <button id="remove-key-button" type="button">Entfernen</button>
-                </div>
-                <p id="key-status" class="muted"></p>
-              </div>
             </div>
-          </details>
+
+            <form id="search-form" class="stack">
+              <div class="field">
+                <label for="school-select">Schule</label>
+                <select id="school-select" name="school"></select>
+              </div>
+
+              <div class="field">
+                <label for="address-input">Adresse in Leipzig</label>
+                <div class="field__row field__row--address">
+                  <input
+                    id="address-input"
+                    name="address"
+                    type="text"
+                    placeholder="z. B. Bergstraße 9, Leipzig"
+                    autocomplete="street-address"
+                  />
+                  <button id="search-button" type="submit">Adresse suchen</button>
+                </div>
+              </div>
+            </form>
+
+            <div class="field">
+              <label for="api-key-input">MapTiler-Schlüssel</label>
+              <div class="field__row field__row--key">
+                <input
+                  id="api-key-input"
+                  type="password"
+                  placeholder="Nur lokal im Browser gespeichert"
+                  autocomplete="off"
+                />
+                <button id="save-key-button" type="button">Speichern</button>
+                <button id="remove-key-button" type="button" class="ghost">
+                  Entfernen
+                </button>
+              </div>
+              <p id="key-status" class="muted"></p>
+            </div>
+
+            <p id="search-status" class="muted search-status">
+              MapTiler-Schlüssel eingeben oder direkt in die Karte klicken.
+            </p>
+          </section>
 
           <section class="card stack">
             <div class="card__header">
-              <h2>Treffer auswahlen</h2>
+              <h2>Ergebnis</h2>
+              <p class="muted">
+                Der Pin kann direkt auf der Karte gesetzt oder verschoben
+                werden.
+              </p>
+            </div>
+            <div id="result-panel" class="result-panel empty-state">
+              Suche eine Adresse oder setze einen Pin in der Karte.
+            </div>
+            <button id="clear-selection-button" type="button" class="ghost">
+              Auswahl zurücksetzen
+            </button>
+            <details class="technical-details">
+              <summary>Technische Details anzeigen</summary>
+              <pre id="result-json" class="result-json"></pre>
+            </details>
+          </section>
+
+          <section class="card stack">
+            <div class="card__header">
+              <h2>Treffer auswählen</h2>
               <p class="muted">
                 Wenn eine Adresse mehrdeutig ist, kannst du hier den passenden
-                Treffer auswahlen oder direkt auf die Karte klicken.
+                Treffer auswählen.
               </p>
             </div>
             <div id="candidate-list" class="candidate-list empty-state">
               Noch keine Suchtreffer.
             </div>
           </section>
-
-          <section class="card stack">
-            <div class="card__header">
-              <h2>Pruf-Ergebnis</h2>
-              <p class="muted">
-                Die rote Flache basiert auf einem handgetracten GeoJSON aus dem
-                offiziellen PDF. Grenzfall-Adressen bitte immer mit der
-                Originalkarte gegenprufen.
-              </p>
-            </div>
-            <div id="result-panel" class="result-panel empty-state">
-              Suche eine Adresse oder setze einen Pin in der Karte.
-            </div>
-            <pre id="result-json" class="result-json"></pre>
-            <button id="clear-selection-button" type="button" class="ghost">
-              Auswahl zurucksetzen
-            </button>
-          </section>
-        </section>
+        </aside>
 
         <section class="map-card">
           <div class="map-card__header">
             <div>
-              <p class="eyebrow">Interaktive Karte</p>
+              <p class="eyebrow">Karte</p>
               <h2 id="district-title">Schulbezirk SO1</h2>
+              <p class="muted">
+                Klick in die Karte setzt einen Pin, Ziehen verschiebt ihn.
+              </p>
             </div>
             <div class="legend">
-              <span><i class="legend__swatch legend__swatch--area"></i> SO1-Flache</span>
+              <span><i class="legend__swatch legend__swatch--area"></i> SO1-Fläche</span>
               <span><i class="legend__swatch legend__swatch--school"></i> Schule</span>
-              <span><i class="legend__swatch legend__swatch--pin"></i> Geprufter Punkt</span>
+              <span><i class="legend__swatch legend__swatch--pin"></i> Geprüfter Punkt</span>
             </div>
           </div>
           <div id="map" class="map"></div>
-          <p class="map-help">
-            Tipp: Du kannst jederzeit direkt in die Karte klicken und den Pin
-            danach verschieben.
-          </p>
         </section>
       </main>
+
+      <footer class="site-note">
+        Die rote Fläche ist eine manuell nachgezeichnete Arbeitsversion aus dem
+        offiziellen PDF. Grenzfälle bitte immer mit der Originalkarte prüfen.
+      </footer>
     </div>
 
     <script type="module" src="/src/main.ts"></script>

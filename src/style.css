@@ -48,22 +48,21 @@ button {
 }
 
 .page-shell {
-  width: min(1380px, calc(100vw - 2rem));
+  width: min(1480px, calc(100vw - 2rem));
   margin: 0 auto;
-  padding: 2rem 0 3rem;
+  padding: 1.25rem 0 2rem;
 }
 
-.hero {
-  display: grid;
-  grid-template-columns: minmax(0, 1.6fr) minmax(18rem, 0.9fr);
-  gap: 1.25rem;
-  margin-bottom: 1.5rem;
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
 
-.hero__copy,
-.hero__sources,
-.panel > .card,
-.settings-card,
+.search-card,
+.card,
 .map-card {
   border: 1px solid var(--line);
   border-radius: 28px;
@@ -72,11 +71,11 @@ button {
   backdrop-filter: blur(8px);
 }
 
-.hero__copy {
-  padding: 1.8rem 1.9rem;
+.topbar__copy {
+  max-width: 44rem;
 }
 
-.hero__copy h1,
+.topbar__copy h1,
 .map-card__header h2,
 .card__header h2 {
   margin: 0;
@@ -85,65 +84,58 @@ button {
   letter-spacing: -0.04em;
 }
 
-.hero__copy h1 {
-  font-size: clamp(2.3rem, 5vw, 4.5rem);
+.topbar__copy h1 {
+  font-size: clamp(2.3rem, 4.5vw, 4rem);
   line-height: 0.95;
-  max-width: 12ch;
 }
 
-.hero__lede {
-  max-width: 55ch;
-  margin: 1rem 0 0;
+.topbar__lede {
+  max-width: 42ch;
+  margin: 0.75rem 0 0;
   color: rgba(23, 40, 58, 0.82);
 }
 
-.hero__sources {
-  padding: 1.4rem 1.5rem;
+.source-links {
   display: flex;
-  flex-direction: column;
   gap: 0.75rem;
-  justify-content: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
-.hero__sources p {
-  margin: 0;
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: rgba(23, 40, 58, 0.62);
-}
-
-.hero__sources a {
-  padding: 0.85rem 1rem;
+.source-links a {
+  padding: 0.8rem 1rem;
   border-radius: 16px;
   text-decoration: none;
+  color: var(--ink);
+  background: rgba(255, 249, 239, 0.92);
   background: linear-gradient(135deg, rgba(241, 190, 72, 0.18), rgba(217, 72, 65, 0.08));
   border: 1px solid rgba(23, 40, 58, 0.08);
+  box-shadow: 0 10px 26px rgba(27, 43, 59, 0.08);
 }
 
-.layout {
+.workspace {
   display: grid;
-  grid-template-columns: minmax(22rem, 28rem) minmax(0, 1fr);
-  gap: 1.25rem;
+  grid-template-columns: minmax(21rem, 25rem) minmax(0, 1fr);
+  gap: 1rem;
   align-items: start;
 }
 
-.panel {
-  display: flex;
-  flex-direction: column;
-  gap: 1.1rem;
-}
-
-.stack {
+.control-panel {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-.panel > form,
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.search-card,
 .card,
-.settings-card {
-  padding: 1.15rem;
+.map-card {
+  padding: 1rem;
 }
 
 .card__header {
@@ -167,6 +159,14 @@ button {
   display: flex;
   gap: 0.6rem;
   flex-wrap: wrap;
+}
+
+.field__row--address {
+  align-items: stretch;
+}
+
+.field__row--key input {
+  flex: 1 1 14rem;
 }
 
 input,
@@ -210,17 +210,7 @@ button.ghost {
   box-shadow: none;
 }
 
-.settings-card summary {
-  cursor: pointer;
-  font-weight: 700;
-}
-
-.settings-card__body {
-  margin-top: 1rem;
-}
-
 .muted,
-.map-help,
 .source-note {
   color: rgba(23, 40, 58, 0.7);
   font-size: 0.93rem;
@@ -238,6 +228,7 @@ button.ghost {
   display: flex;
   flex-direction: column;
   gap: 0.65rem;
+  min-height: 5rem;
 }
 
 .candidate {
@@ -317,7 +308,7 @@ button.ghost {
 }
 
 .result-json {
-  margin: 0;
+  margin: 0.75rem 0 0;
   padding: 0.9rem;
   border-radius: 20px;
   background: #102030;
@@ -328,9 +319,8 @@ button.ghost {
 }
 
 .map-card {
-  padding: 1rem;
   position: sticky;
-  top: 1rem;
+  top: 0.75rem;
 }
 
 .map-card__header {
@@ -377,7 +367,8 @@ button.ghost {
 }
 
 .map {
-  height: min(72vh, 780px);
+  height: min(79vh, 860px);
+  min-height: 32rem;
   border-radius: 26px;
   overflow: hidden;
   border: 1px solid rgba(23, 40, 58, 0.1);
@@ -397,10 +388,29 @@ button.ghost {
   background: var(--accent);
 }
 
+.technical-details summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.site-note {
+  margin-top: 0.85rem;
+  color: rgba(23, 40, 58, 0.68);
+  font-size: 0.9rem;
+}
+
 @media (max-width: 1080px) {
-  .hero,
-  .layout {
+  .workspace {
     grid-template-columns: 1fr;
+  }
+
+  .topbar {
+    flex-direction: column;
+    align-items: start;
+  }
+
+  .source-links {
+    justify-content: start;
   }
 
   .map-card {
@@ -414,16 +424,19 @@ button.ghost {
     padding-top: 1rem;
   }
 
-  .hero__copy,
-  .hero__sources,
-  .panel > form,
+  .search-card,
   .card,
-  .settings-card,
   .map-card {
     border-radius: 22px;
   }
 
+  .field__row--address,
+  .field__row--key {
+    flex-direction: column;
+  }
+
   .map {
     height: 58vh;
+    min-height: 24rem;
   }
 }

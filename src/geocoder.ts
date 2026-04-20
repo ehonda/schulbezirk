@@ -37,12 +37,8 @@ export class MapTilerGeocoder {
     return window.localStorage.getItem(API_KEY_STORAGE_KEY)?.trim() ?? '';
   }
 
-  get buildTimeKey(): string {
-    return import.meta.env.VITE_MAPTILER_API_KEY?.trim() ?? '';
-  }
-
   get effectiveKey(): string {
-    return this.runtimeKey || this.buildTimeKey;
+    return this.runtimeKey;
   }
 
   get isConfigured(): boolean {

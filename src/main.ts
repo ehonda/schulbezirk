@@ -97,7 +97,6 @@ class SchulbezirkApp {
   async init(): Promise<void> {
     this.initializeMap();
     this.attachEventHandlers();
-    this.renderKeyStatus();
 
     const { schools, districts } = await loadAppData();
     this.schools = schools;
@@ -110,6 +109,7 @@ class SchulbezirkApp {
     this.populateSchoolOptions();
     this.renderDistrict();
     this.renderSchoolMarkers();
+    this.renderKeyStatus();
     this.updateSearchAvailability();
   }
 
@@ -149,6 +149,12 @@ class SchulbezirkApp {
     });
 
     this.elements.saveKeyButton.addEventListener('click', () => {
+      if (!this.elements.apiKeyInput.value.trim()) {
+        this.elements.keyStatus.textContent =
+          'Bitte zuerst einen gültigen MapTiler-Schlüssel eingeben.';
+        return;
+      }
+
       this.geocoder.saveRuntimeKey(this.elements.apiKeyInput.value);
       this.elements.apiKeyInput.value = '';
       this.renderKeyStatus();
@@ -240,27 +246,22 @@ class SchulbezirkApp {
   private renderKeyStatus(): void {
     if (this.geocoder.runtimeKey) {
       this.elements.keyStatus.textContent =
-        'Browser-Schlussel aktiv. Adresssuche ist freigeschaltet.';
-      return;
-    }
-
-    if (this.geocoder.buildTimeKey) {
-      this.elements.keyStatus.textContent =
-        'Build-Schlussel aktiv. Adresssuche ist fur diese Bereitstellung konfiguriert.';
+        'Schlüssel lokal gespeichert. Die Adresssuche ist aktiv.';
       return;
     }
 
     this.elements.keyStatus.textContent =
-      'Noch kein Schlussel konfiguriert. Die Karte funktioniert trotzdem im manuellen Pin-Modus.';
+      'Noch kein Schlüssel gespeichert. Ohne Schlüssel funktioniert weiter die manuelle Pin-Platzierung.';
   }
 
   private updateSearchAvailability(): void {
-    const searchAvailable = this.geocoder.isConfigured;
-    this.elements.searchButton.disabled = !searchAvailable;
-    this.elements.addressInput.disabled = !searchAvailable;
-    this.elements.searchStatus.textContent = searchAvailable
-      ? 'Adresssuche aktiv. Vollstandige Adresse eingeben und suchen.'
-      : 'Adresssuche deaktiviert. MapTiler-Schlussel hinterlegen oder direkt in die Karte klicken.';
+    this.renderSearchHint();
+  }
+
+  private renderSearchHint(): void {
+    this.elements.searchStatus.textContent = this.geocoder.isConfigured
+      ? 'Adresse eingeben oder direkt einen Punkt auf der Karte setzen.'
+      : 'MapTiler-Schlüssel eingeben oder direkt in die Karte klicken.';
   }
 
   private async handleSearch(): Promise<void> {
@@ -268,6 +269,13 @@ class SchulbezirkApp {
 
     if (!query) {
       this.elements.searchStatus.textContent = 'Bitte zuerst eine Adresse eingeben.';
+      return;
+    }
+
+    if (!this.geocoder.isConfigured) {
+      this.elements.searchStatus.textContent =
+        'Bitte zuerst einen MapTiler-Schlüssel eingeben oder direkt in die Karte klicken.';
+      this.elements.apiKeyInput.focus();
       return;
     }
 
@@ -290,7 +298,7 @@ class SchulbezirkApp {
       }
 
       this.elements.searchStatus.textContent =
-        'Mehrere Treffer gefunden. Bitte den passenden auswahlen oder manuell pinnen.';
+        'Mehrere Treffer gefunden. Bitte den passenden Treffer auswählen.';
       this.renderCandidates(candidates, query);
     } catch (error) {
       const message =
@@ -382,8 +390,8 @@ class SchulbezirkApp {
 
     this.elements.searchStatus.textContent =
       selection.resolutionMethod === 'geocoded'
-        ? 'Adresse ubernommen. Ergebnis wurde aktualisiert.'
-        : 'Manueller Pin ubernommen. Ergebnis wurde aktualisiert.';
+        ? 'Adresse übernommen. Ergebnis wurde aktualisiert.'
+        : 'Manueller Pin übernommen. Ergebnis wurde aktualisiert.';
 
     if (!this.selectionMarker) {
       this.selectionMarker = L.marker([selection.lat, selection.lon], {
@@ -448,7 +456,9 @@ class SchulbezirkApp {
 
     const district = this.selectedDistrict;
     const statusClass = result.inside ? 'status status--inside' : 'status status--outside';
-    const statusLabel = result.inside ? 'Innerhalb von SO1' : 'Ausserhalb von SO1';
+    const statusLabel = result.inside ? 'Innerhalb von SO1' : 'Außerhalb von SO1';
+    const resolutionLabel =
+      result.resolutionMethod === 'geocoded' ? 'Adresssuche' : 'manueller Pin';
 
     this.elements.resultPanel.className = 'result-panel';
     this.elements.resultPanel.innerHTML = `
@@ -459,7 +469,7 @@ class SchulbezirkApp {
           <dd>${result.normalizedAddress}</dd>
         </div>
         <div>
-          <dt>Gewahlte Schule</dt>
+          <dt>Gewählte Schule</dt>
           <dd>${result.schoolName}</dd>
         </div>
         <div>
@@ -467,8 +477,8 @@ class SchulbezirkApp {
           <dd>${formatCoordinate(result.lat)}, ${formatCoordinate(result.lon)}</dd>
         </div>
         <div>
-          <dt>Ermittelt uber</dt>
-          <dd>${result.resolutionMethod}</dd>
+          <dt>Ermittelt über</dt>
+          <dd>${resolutionLabel}</dd>
         </div>
         <div>
           <dt>Polygon-Version</dt>
@@ -476,9 +486,9 @@ class SchulbezirkApp {
         </div>
       </dl>
       <p class="source-note">
-        <a href="${OFFICIAL_SO1_MAP_URL}" target="_blank" rel="noreferrer">Offizielle SO1-Karte offnen</a>
+        <a href="${OFFICIAL_SO1_MAP_URL}" target="_blank" rel="noreferrer">Offizielle SO1-Karte öffnen</a>
         <span> | </span>
-        <a href="${district.properties.sourceUrl}" target="_blank" rel="noreferrer">Metadaten zur Quelle</a>
+        <a href="${district.properties.sourceUrl}" target="_blank" rel="noreferrer">Quelle ansehen</a>
       </p>
     `;
 
@@ -491,15 +501,13 @@ class SchulbezirkApp {
     this.reverseLookupToken += 1;
     this.renderCandidates([]);
     this.elements.addressInput.value = '';
-    this.elements.searchStatus.textContent = this.geocoder.isConfigured
-      ? 'Adresssuche aktiv. Vollstandige Adresse eingeben und suchen.'
-      : 'Adresssuche deaktiviert. MapTiler-Schlussel hinterlegen oder direkt in die Karte klicken.';
 
     if (this.selectionMarker) {
       this.selectionMarker.remove();
       this.selectionMarker = undefined;
     }
 
+    this.renderSearchHint();
     this.renderCurrentResult();
   }
 }
